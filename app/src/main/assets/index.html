@@ -5,43 +5,77 @@
     <meta name="description" content="JavaScript - A-Frame School">
     <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
     <script>
-      console.log(window.AFRAME);
+      gazeEnabled = false;
+
       AFRAME.registerComponent('school-playground', {
         init: function () {
           // Solution for Modifying Entities.
           sceneEl = document.querySelector('a-scene');
 
+          // Javascript references to HTML objects
+          // choice objects
           var choicesNodes = sceneEl.querySelectorAll('.choice');
           choices = [];
           for(var i = choicesNodes.length; i--; choices.unshift(choicesNodes[i]));
-          for (var i = 0; i < choices.length; i++) {
-            choices[i].addEventListener('click', function(e) {
-              selectChoice();
-            });
-            choices[i].addEventListener('mouseenter', function(e) {
-              hoverChoice(choices.indexOf(e.target));
-            });
-            choices[i].addEventListener('mouseleave', function(e) {
-              hoverChoice(choices.indexOf(e.target));
-            });
-          }
+          // camera object
+          camera = sceneEl.querySelectorAll('a-camera')[0];
+
         }
       });
 
-      var choiceXpositions = [-4.1, 0, 4.1];
-      function hoverChoice(choiceIndex) {
-        sceneEl.querySelector('#choiceHighlight').setAttribute('position', {x: choiceXpositions[choiceIndex], y: 2, z: -4.1});
-        sceneEl.querySelector('#choiceHighlight').setAttribute('material', 'color', '#FF0000');
+      function setGazeEnabled(enabled) {
+        gazeEnabled = enabled;
+        if (gazeEnabled) {
+          // set up gaze listeners
+          for (var i = 0; i < choices.length; i++) {
+            camera.setAttribute('visible', 'true');
+            choices[i].addEventListener('click', selectChoice);
+            choices[i].addEventListener('mouseenter', hoverChoice);
+            choices[i].addEventListener('mouseleave', hoverChoice);
+          }
+
+        } else if (!gazeEnabled) {
+          // remove gaze listeners
+          for (var i = 0; i < choices.length; i++) {
+            camera.setAttribute('visible', 'false');
+            choices[i].removeEventListener('click', selectChoice);
+            choices[i].removeEventListener('mouseenter', hoverChoice);
+            choices[i].removeEventListener('mouseleave', selectChoice);
+          }
+        }
       }
+
+      var choiceXpositions = [-4.1, 0, 4.1];
+      var currentChoiceIndex = 1;
+      function hoverChoice(choice) {
+        if (typeof choice == 'number') {
+          currentChoiceIndex = choice;
+        } else if (typeof choice == 'object') {
+          currentChoiceIndex = choices.indexOf(choice.target);
+        }
+
+        if (currentChoiceIndex != -1) {
+          sceneEl.querySelector('#choiceHighlight').setAttribute('position', {x: choiceXpositions[currentChoiceIndex], y: 2, z: -4.1});
+          sceneEl.querySelector('#choiceHighlight').setAttribute('material', 'color', '#FF0000');
+        }
+      }
+
+      function hoverNextChoice() {
+        hoverChoice((currentChoiceIndex+1)%choiceXpositions.length);
+      }
+
+      function hoverPrevChoice() {
+        hoverChoice((currentChoiceIndex-1)%choiceXpositions.length);
+      }
+
       function selectChoice() {
         console.log('select!');
         sceneEl.querySelector('#choiceHighlight').setAttribute('material', 'color', '#7BC8A4');
       }
+
       function deselectChoice() {
         sceneEl.querySelector('#choiceHighlight').setAttribute('material', 'color', '#FF0000');
       }
-      window.setTimeout(function() { selectChoice(0); }, 1000);
-
     </script>
 </head>
 <body>
@@ -65,7 +99,7 @@
 
     <!-- camera -->
     <!-- https://stackoverflow.com/questions/43046362/add-gaze-buttons-to-scene-using-a-frame -->
-    <a-camera look-controls wasd-controls cursor="maxDistance: 30; fuse: true">
+    <a-camera visible="false" look-controls wasd-controls cursor="maxDistance: 30; fuse: true">
         <!-- progress bar -->
         <a-entity position="0 0 -3" geometry="primitive: ring; radiusOuter: 0.07;radiusInner: 0.05;" material="color: cyan; shader: flat"
                   cursor="maxDistance: 30; fuse: true">
