@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/WebVRView.iml" filepath="$PROJECT_DIR$/WebVRView.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/WebVRView-app.iml" filepath="$PROJECT_DIR$/app/WebVRView-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WebVRView.iml" filepath="$PROJECT_DIR$/WebVRView.iml" group="WebVRView" />
+      <module fileurl="file://$PROJECT_DIR$/app/WebVRView-app.iml" filepath="$PROJECT_DIR$/app/WebVRView-app.iml" group="WebVRView/app" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
