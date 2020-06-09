@@ -24,7 +24,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         super.onCreate(savedInstanceState);
 
         webVRView = new WebVRView(this);
-        webVRView.init("file:///android_asset/index.html");
+        webVRView.init("https://visar.co.za/lvr");
         webVRView.setOnTouchListener(this);
         webVRView.executeJS("setGazeEnabled", "true");
 
